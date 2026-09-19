@@ -44,7 +44,7 @@ const App = () => {
         <Route path="/otp-verification/:email" element={<OTP />} />
         <Route path="/password/reset/:token" element={<ResetPassword />} />
       </Routes>
-      <ToastContainer theme="light" /> {/* removed extra space */}
+      <ToastContainer theme="light" />
     </Router>
   );
 };

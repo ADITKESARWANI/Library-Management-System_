@@ -1,4 +1,4 @@
-import logoWithTitle from "../assets/logo-with-title-black.png";
+import logoWithTitle from "../assets/black-logo.png";
 import returnIcon from "../assets/redo.png";
 import browseIcon from "../assets/pointing.png";
 import bookIcon from "../assets/book-square.png";

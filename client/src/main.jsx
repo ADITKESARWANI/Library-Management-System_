@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import React, { useState,useEffect } from "react";
+import React from "react";
 import "./index.css";
 import App from "./App.jsx";
 import { Provider } from "react-redux";

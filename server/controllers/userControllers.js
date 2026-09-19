@@ -38,17 +38,14 @@ export const registerNewAdmin = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("File Format not supported.", 400));
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const cloudinaryResponse = await cloudinary.uploader.upload(
-        profile.tempFilePath, {
-        folder: "LIBRARY_MANAGEMENT_SYSTEM_ADMIN_PROFILE"
-    }
-    );
-    if (!cloudinaryResponse || cloudinaryResponse.error) {
-        console.error(
-            "Cloudinary error:",
-            cloudinaryResponse.error || "Unknown cloudinary error."
-        );
-        return next(new ErrorHandler("Failed to upload avatar image to cloudinary.", 400));
+    let cloudinaryResponse = { public_id: "dummy", secure_url: "https://via.placeholder.com/150" };
+    try {
+        cloudinaryResponse = await cloudinary.uploader.upload(
+            profile.tempFilePath, {
+            folder: "LIBRARY_MANAGEMENT_SYSTEM_ADMIN_PROFILE"
+        });
+    } catch (error) {
+        console.error("Cloudinary upload failed, using dummy image. Error:", error);
     }
     const admin = await User.create({
         name, email, password: hashedPassword,

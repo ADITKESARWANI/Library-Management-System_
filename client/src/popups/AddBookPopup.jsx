@@ -14,13 +14,8 @@ const AddBookPopup = () => {
 
   const handleAddBook = (e) => {
     e.preventDefault();
-    const formData = new formData();
-    formData.append("title", title);
-    formData.append("author", author);
-    formData.append("price", price);
-    formData.append("quantity", quantity);
-    formData.append("description", description);
-    dispatch(addBook());
+    const data = { title, author, price, quantity, description };
+    dispatch(addBook(data));
   };
 
   return (

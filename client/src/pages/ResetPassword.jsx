@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useParams, useNavigate } from "react-router-dom";
 import logo from "../assets/black-logo.png";
-import logo_with_title from "../assets/logo-with-title.png";
+import logo_with_title from "../assets/white-logo.png";
 import { useDispatch, useSelector } from "react-redux";
 import { resetAuthSlice, resetPassword } from "../store/slices/authSlice";
 import { toast } from "react-toastify";
@@ -11,22 +11,22 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const { token } = useParams();
   const dispatch = useDispatch();
-  const { loading, error, message, user, isAuthenticated } = useSelector(
+  const navigate = useNavigate();
+  const { loading, error, message, isAuthenticated } = useSelector(
     (state) => state.auth,
   );
 
   const handleResetPassword = (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("password", password);
-    formData.append("confirmPassword", confirmPassword);
-    dispatch(resetPassword(formData , token));
+    const data = { password, confirmPassword };
+    dispatch(resetPassword(data, token));
   };
 
   useEffect(() => {
     if (message) {
       toast.success(message);
       dispatch(resetAuthSlice());
+      navigate("/login");
     }
     if (error) {
       toast.error(error);

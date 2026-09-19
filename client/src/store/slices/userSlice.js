@@ -51,9 +51,6 @@ export const addNewAdmin = (data) => async (dispatch) => {
   await axios
     .post("http://localhost:4000/api/v1/user/add/new-admin", data, {
       withCredentials: true,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
     })
     .then((res) => {
       dispatch(userSlice.actions.addNewAdminSuccess());

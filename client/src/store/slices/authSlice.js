@@ -173,7 +173,7 @@ export const register = (data) => async (dispatch) => {
       dispatch(authSlice.actions.registerSuccess(res.data));
     })
     .catch((error) => {
-      dispatch(authSlice.actions.registerFailed(error.response.data.message));
+      dispatch(authSlice.actions.registerFailed(error.response?.data?.message || error.message));
     });
 }; // Register function
 
@@ -196,7 +196,7 @@ export const otpVerification = (email, otp) => async (dispatch) => {
     })
     .catch((error) => {
       dispatch(
-        authSlice.actions.otpVerificationFailed(error.response.data.message),
+        authSlice.actions.otpVerificationFailed(error.response?.data?.message || error.message),
       );
     });
 }; // OTP_Verification function
@@ -215,7 +215,7 @@ export const login = (data) => async (dispatch) => {
       dispatch(authSlice.actions.loginSuccess(res.data));
     })
     .catch((error) => {
-      dispatch(authSlice.actions.loginFailed(error.response.data.message));
+      dispatch(authSlice.actions.loginFailed(error.response?.data?.message || error.message));
     });
 }; // Login function
 
@@ -231,7 +231,7 @@ export const logout = () => async (dispatch) => {
       dispatch(authSlice.actions.resetAuthSlice());
     })
     .catch((error) => {
-      dispatch(authSlice.actions.logoutFailed(error.response.data.message));
+      dispatch(authSlice.actions.logoutFailed(error.response?.data?.message || error.message));
     });
 }; // Logout function
 
@@ -272,7 +272,7 @@ export const forgotPassword = (email) => async (dispatch) => {
     })
     .catch((error) => {
       dispatch(
-        authSlice.actions.forgotPasswordFailed(error.response.data.message),
+        authSlice.actions.forgotPasswordFailed(error.response?.data?.message || error.message),
       );
     });
 }; //Forgot Password
@@ -292,7 +292,7 @@ export const updatePassword = (data) => async (dispatch) => {
     })
     .catch((error) => {
       dispatch(
-        authSlice.actions.updatePasswordFailed(error.response.data.message),
+        authSlice.actions.updatePasswordFailed(error.response?.data?.message || error.message),
       );
     });
 }; //update Password
@@ -312,7 +312,7 @@ export const resetPassword = (data, token) => async (dispatch) => {
     })
     .catch((error) => {
       dispatch(
-        authSlice.actions.resetPasswordFailed(error.response.data.message),
+        authSlice.actions.resetPasswordFailed(error.response?.data?.message || error.message),
       );
     });
 }; //reset Password

@@ -24,8 +24,7 @@ export const addBook = catchAsyncErrors(async (req, res, next) => {
 
 });
 export const getAllBooks = catchAsyncErrors(async (req, res, next) => {
-    const
-        books = await Book.find();
+    const books = await Book.find();
     res.status(200).json({
         success: true, books,
     });

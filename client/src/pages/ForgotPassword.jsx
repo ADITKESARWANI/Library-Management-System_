@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import logo from "../assets/black-logo.png";
-import logo_with_title from "../assets/logo-with-title.png";
+import logo_with_title from "../assets/white-logo.png";
 import { useDispatch, useSelector } from "react-redux";
 import { forgotPassword, resetAuthSlice } from "../store/slices/authSlice";
 import { toast } from "react-toastify";
@@ -10,7 +10,7 @@ import { Link, Navigate } from "react-router-dom";
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const dispatch = useDispatch();
-  const { loading, error, message, user, isAuthenticated } = useSelector(
+  const { loading, error, message, isAuthenticated } = useSelector(
     (state) => state.auth,
   );
 

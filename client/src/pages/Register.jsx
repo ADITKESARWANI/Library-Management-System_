@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import logo from "../assets/black-logo.png";
-import logo_with_title from "../assets/logo-with-title.png";
+import logo_with_title from "../assets/white-logo.png";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, Navigate } from "react-router-dom";
 import { register, resetAuthSlice } from "../store/slices/authSlice";
@@ -21,10 +21,7 @@ const Register = () => {
 
   const handleRegister = (e) => {
     e.preventDefault();
-    const data = new FormData();
-    data.append("name", name);
-    data.append("email", email);
-    data.append("password", password);
+    const data = { name, email, password };
     dispatch(register(data));
   };
 

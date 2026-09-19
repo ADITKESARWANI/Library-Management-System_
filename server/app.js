@@ -1,25 +1,27 @@
 import express from "express";
-// import { config } from "dotenv"
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import { connectDB } from "./database/db.js";
 import {errorMiddleware} from "./middleware/errorMiddlewares.js"
 import authRouter from "./routes/authRoutes.js";
 import bookRouter from "./routes/bookRoutes.js";
 import borrowRouter from "./routes/borrowRouter.js";
 import userRouter from "./routes/userRouter.js";
-// import expressFileupload from "express-fileupload";
 import fileUpload from "express-fileupload";
-export const app = express();
-
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 
-dotenv.config({ path: "./config/config.env" });
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.join(__dirname, "config", "config.env") });
+
+export const app = express();
 
 
 
 app.use(cors({
-    origin: [process.env.FRONTEND_URL],
+    origin: [process.env.FRONTEND_URL, "http://localhost:5173", "http://localhost:5174"],
     methods: ["GET", "POST", "PUT", "DELETE",],
     credentials: true,
 }));
@@ -38,9 +40,6 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/book", bookRouter);
 app.use("/api/v1/borrow", borrowRouter);
 app.use("/api/v1/user", userRouter);
-
-
-connectDB();
 
 
 app.use(errorMiddleware);

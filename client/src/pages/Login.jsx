@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import logo from "../assets/black-logo.png";
-import logo_with_title from "../assets/logo-with-title.png";
+import logo_with_title from "../assets/white-logo.png";
 import { useDispatch, useSelector } from "react-redux";
 import { login, resetAuthSlice } from "../store/slices/authSlice";
 import { toast } from "react-toastify";
@@ -15,9 +15,7 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    const data = new FormData();
-    data.append("email", email);
-    data.append("password", password);
+    const data = { email, password };
     dispatch(login(data));
   };
   useEffect(() => {

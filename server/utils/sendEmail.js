@@ -1,25 +1,26 @@
-import nodeMailer from "nodemailer";
-export const sendEmail = async ({email, subject, message}) => {
-    const transporter = nodeMailer.createTransport({
-        host: process.env.SMTP_HOST,
-        service: process.env.SMTP_SERVICE,
-        port: process.env.SMTP_PORT,
-
-        auth: {
-            user: process.env.SMTP_MAIL,
-            pass: process.env.SMTP_PASSWORD
+export const sendEmail = async ({ email, subject, message }) => {
+    const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
         },
+        body: JSON.stringify({
+            from: process.env.RESEND_FROM_EMAIL,
+            to: [email],
+            subject: subject,
+            html: message,
+        }),
     });
 
+    const data = await response.json();
 
-
-    const mailOptions = {
-        from: process.env.SMTP_MAIL,
-        to: email,
-        subject,
-        html: message, 
+    if (!response.ok) {
+        console.error("Resend email error:", data);
+        throw new Error(data.message || "Failed to send email");
     }
 
+    console.log("Email sent successfully:", data.id);
 
-    await transporter.sendMail(mailOptions);
+    return data;
 };

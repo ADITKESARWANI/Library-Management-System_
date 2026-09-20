@@ -98,7 +98,8 @@ export const verifyOTP = catchAsyncErrors(async (req, res, next) => {
 
 
     } catch (error) {
-        return next(new ErrorHandler("Internal server error", 500));
+        console.error("verifyOTP Error:", error);
+        return next(new ErrorHandler(error.message || "Internal server error", 500));
     }
 });
 

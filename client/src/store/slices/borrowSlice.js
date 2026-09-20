@@ -1,3 +1,4 @@
+import { BACKEND_URL } from "../../config";
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toggleRecordBookPopup } from "./popUpSlice";
@@ -82,7 +83,7 @@ export const fetchUserBorrowedBooks = () => async (dispatch) => {
   dispatch(borrowSlice.actions.fetchUserBorrowedBookRequest());
   try {
     const res = await axios.get(
-      "http://localhost:4000/api/v1/borrow/my-borrowed-books",
+      `${BACKEND_URL}/api/v1/borrow/my-borrowed-books`,
       { withCredentials: true },
     );
 
@@ -104,7 +105,7 @@ export const fetchAllBorrowedBooks = () => async (dispatch) => {
   dispatch(borrowSlice.actions.fetchAllBorrowedBookRequest());
   try {
     const res = await axios.get(
-      "http://localhost:4000/api/v1/borrow/borrowed-books-by-users",
+      `${BACKEND_URL}/api/v1/borrow/borrowed-books-by-users`,
       { withCredentials: true },
     );
 
@@ -126,7 +127,7 @@ export const recordBorrowBook = (email, id) => async (dispatch) => {
   dispatch(borrowSlice.actions.recordBookRequest());
   try {
     const res = await axios.post(
-      `http://localhost:4000/api/v1/borrow/record-borrow-book/${id}`,
+      `${BACKEND_URL}/api/v1/borrow/record-borrow-book/${id}`,
       { email },
       {
         withCredentials: true,
@@ -149,7 +150,7 @@ export const returnBook = (email, id) => async (dispatch) => {
   dispatch(borrowSlice.actions.returnBookRequest());
   try {
     const res = await axios.put(
-      `http://localhost:4000/api/v1/borrow/return-borrowed-book/${id}`,
+      `${BACKEND_URL}/api/v1/borrow/return-borrowed-book/${id}`,
       { email },
       {
         withCredentials: true,

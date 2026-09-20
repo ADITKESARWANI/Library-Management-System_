@@ -1,3 +1,4 @@
+import { BACKEND_URL } from "../../config";
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -162,7 +163,7 @@ export const resetAuthSlice = () => (dispatch) => {
 export const register = (data) => async (dispatch) => {
   dispatch(authSlice.actions.registerRequest());
   await axios
-    .post("http://localhost:4000/api/v1/auth/register", data, {
+    .post(`${BACKEND_URL}/api/v1/auth/register`, data, {
       //URL should be paste here.......
       withCredentials: true,
       headers: {
@@ -181,7 +182,7 @@ export const otpVerification = (email, otp) => async (dispatch) => {
   dispatch(authSlice.actions.otpVerificationRequest());
   await axios
     .post(
-      "http://localhost:4000/api/v1/auth/verify-otp",
+      `${BACKEND_URL}/api/v1/auth/verify-otp`,
       { email, otp },
       {
         //URL should be paste here.......
@@ -204,7 +205,7 @@ export const otpVerification = (email, otp) => async (dispatch) => {
 export const login = (data) => async (dispatch) => {
   dispatch(authSlice.actions.loginRequest());
   await axios
-    .post("http://localhost:4000/api/v1/auth/login", data, {
+    .post(`${BACKEND_URL}/api/v1/auth/login`, data, {
       //URL should be paste here.......
       withCredentials: true,
       headers: {
@@ -222,7 +223,7 @@ export const login = (data) => async (dispatch) => {
 export const logout = () => async (dispatch) => {
   dispatch(authSlice.actions.logoutRequest());
   await axios
-    .get("http://localhost:4000/api/v1/auth/logout", {
+    .get(`${BACKEND_URL}/api/v1/auth/logout`, {
       //URL should be paste here.......
       withCredentials: true,
     })
@@ -238,7 +239,7 @@ export const logout = () => async (dispatch) => {
 export const getUser = () => async (dispatch) => {
   dispatch(authSlice.actions.getUserRequest());
   await axios
-    .get("http://localhost:4000/api/v1/auth/me", {
+    .get(`${BACKEND_URL}/api/v1/auth/me`, {
       withCredentials: true,
     })
     .then((res) => {
@@ -257,7 +258,7 @@ export const forgotPassword = (email) => async (dispatch) => {
   dispatch(authSlice.actions.forgotPasswordRequest());
   await axios
     .post(
-      "http://localhost:4000/api/v1/auth/password/forgot",
+      `${BACKEND_URL}/api/v1/auth/password/forgot`,
       { email },
       {
         //URL should be paste here.......
@@ -280,7 +281,7 @@ export const forgotPassword = (email) => async (dispatch) => {
 export const updatePassword = (data) => async (dispatch) => {
   dispatch(authSlice.actions.updatePasswordRequest());
   await axios
-    .put(`http://localhost:4000/api/v1/auth/password/update`, data, {
+    .put(`${BACKEND_URL}/api/v1/auth/password/update`, data, {
       //URL should be paste here.......
       withCredentials: true,
       headers: {
@@ -300,7 +301,7 @@ export const updatePassword = (data) => async (dispatch) => {
 export const resetPassword = (data, token) => async (dispatch) => {
   dispatch(authSlice.actions.resetPasswordRequest());
   await axios
-    .put(`http://localhost:4000/api/v1/auth/password/reset/${token}`, data, {
+    .put(`${BACKEND_URL}/api/v1/auth/password/reset/${token}`, data, {
       //URL should be paste here.......
       withCredentials: true,
       headers: {

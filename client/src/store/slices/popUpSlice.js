@@ -1,3 +1,4 @@
+import { BACKEND_URL } from "../../config";
 import { createSlice } from "@reduxjs/toolkit";
 
 const popupSlice = createSlice({

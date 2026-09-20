@@ -1,3 +1,4 @@
+import { BACKEND_URL } from "../../config";
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toggleAddBookPopup } from "./popUpSlice";
@@ -51,7 +52,7 @@ const bookSlice = createSlice({
 export const fetchAllBooks = () => async (dispatch) => {
   dispatch(bookSlice.actions.fetchBookRequest());
   await axios
-    .get("http://localhost:4000/api/v1/book/all", {
+    .get(`${BACKEND_URL}/api/v1/book/all`, {
       withCredentials: true,
     })
     .then((res) => {
@@ -69,7 +70,7 @@ export const fetchAllBooks = () => async (dispatch) => {
 export const addBook = (data) => async (dispatch) => {
   dispatch(bookSlice.actions.addBookRequest());
   await axios
-    .post("http://localhost:4000/api/v1/book/admin/add", data, {
+    .post(`${BACKEND_URL}/api/v1/book/admin/add`, data, {
       withCredentials: true,
       headers: {
         "Content-Type": "application/json",

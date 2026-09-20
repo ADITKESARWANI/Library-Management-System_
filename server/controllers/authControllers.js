@@ -66,7 +66,7 @@ export const verifyOTP = catchAsyncErrors(async (req, res, next) => {
         if (userAllEntries.length > 1) {
             user = userAllEntries[0];
             await User.deleteMany({
-                _id: { $new: user._id },
+                _id: { $ne: user._id },
                 email,
                 accountVerified: false,
             });

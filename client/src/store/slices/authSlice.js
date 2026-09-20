@@ -204,6 +204,7 @@ export const otpVerification = (email, otp) => async (dispatch) => {
 
 export const login = (data) => async (dispatch) => {
   dispatch(authSlice.actions.loginRequest());
+  console.log("Attempting to login to:", `${BACKEND_URL}/api/v1/auth/login`);
   await axios
     .post(`${BACKEND_URL}/api/v1/auth/login`, data, {
       //URL should be paste here.......

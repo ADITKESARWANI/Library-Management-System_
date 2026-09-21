@@ -81,7 +81,7 @@ const BookManagement = () => {
       <main className="relative flex-1 p-6 pt-28">
         <Header />
         {/* Sub Header */}
-        <header className="flex flex-1 gap-3 md:flex-row md:justify-between md:items-center">
+        <header className="flex flex-col gap-4 md:flex-row md:justify-between md:items-center">
           <h2 className="text-xl font-medium md:text-2xl md:font-semibold">
             {user && user.role === "Admin" ? "Book Management" : "Books"}
           </h2>
@@ -109,7 +109,7 @@ const BookManagement = () => {
 
         {/* table */}
         {books && books.length > 0 ? (
-          <div className="mt-6 overflow-auto bg-white rounded-md shadow-lg">
+          <div className="mt-6 overflow-x-auto bg-white rounded-md shadow-lg">
             <table className="min-w-full border-collapse">
               <thead>
                 <tr className="bg-gray-200">

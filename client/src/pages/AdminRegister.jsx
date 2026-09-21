@@ -1,0 +1,165 @@
+import React, { useState, useEffect } from "react";
+import logo from "../assets/black-logo.png";
+import logo_with_title from "../assets/white-logo.png";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate, Navigate } from "react-router-dom";
+import { adminRegister, resetAuthSlice } from "../store/slices/authSlice";
+import { toast } from "react-toastify";
+
+const AdminRegister = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [adminSecret, setAdminSecret] = useState("");
+
+  const dispatch = useDispatch();
+  const { loading, error, message, isAuthenticated } = useSelector(
+    (state) => state.auth
+  );
+
+  const navigate = useNavigate();
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+    const data = { name, email, password, adminSecret };
+    dispatch(adminRegister(data));
+  };
+
+  useEffect(() => {
+    if (message) {
+      toast.success(message);
+      navigate(`/otp-verification/${email}`);
+      dispatch(resetAuthSlice());
+    }
+
+    if (error) {
+      toast.error(error);
+      dispatch(resetAuthSlice());
+    }
+  }, [message, error, dispatch, navigate, email]);
+
+  if (isAuthenticated) {
+    return <Navigate to="/" />;
+  }
+
+  return (
+<div className="flex flex-col md:flex-row min-h-screen overflow-hidden">
+      {/* Left Section */}
+      <div className="hidden w-full md:w-1/2 bg-black text-white md:flex flex-col items-center justify-center p-8 rounded-tr-[70px] rounded-br-[70px]">
+        <div className="text-center">
+          <div className="flex justify-center mb-10">
+            <img
+              src={logo_with_title}
+              alt="logo"
+              className="mb-12 h-44 w-auto"
+            />
+          </div>
+          <p className="text-gray-300 mb-12">
+            Already have an Admin Account? Sign in now.
+          </p>
+          <Link
+            to={"/login"}
+            className="border-2 rounded-lg font-semibold border-white py-3 px-8 hover:bg-white hover:text-black transition"
+          >
+            Sign In
+          </Link>
+        </div>
+      </div>
+
+        {/*RIGHT SIDE*/}
+        <div className="w-full md:w-1/2 flex items-center justify-center bg-white p-8 relative">
+          <Link
+            to={"/"}
+            className="border-2 border-black rounded-3xl font-bold w-52 py-2 px-4 fixed top-10 -left-28 hover:bg-black hover:text-white transition duration-300 text-end z-10"
+          >
+            Back to Home
+          </Link>
+          <div className="w-full max-w-sm">
+          <div className="flex justify-center mb-12">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
+              <h3 className="font-medium text-4xl">Admin Sign Up</h3>
+              <img
+                src={logo}
+                alt="logo"
+                className="w-24 object-cover"
+              />
+            </div>
+          </div>
+
+          <p className="text-gray-800 text-center mb-12">
+            Register for administrative access to the Library Management System.
+          </p>
+
+          <form onSubmit={handleRegister}>
+            <div className="mb-4">
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Full Name"
+                required
+                className="w-full px-4 py-3 border border-black rounded-md focus:outline-none"
+              />
+            </div>
+
+            <div className="mb-4">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                required
+                className="w-full px-4 py-3 border border-black rounded-md focus:outline-none"
+              />
+            </div>
+
+            <div className="mb-4">
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                required
+                className="w-full px-4 py-3 border border-black rounded-md focus:outline-none"
+              />
+            </div>
+
+            <div className="mb-4">
+              <input
+                type="password"
+                value={adminSecret}
+                onChange={(e) => setAdminSecret(e.target.value)}
+                placeholder="Admin Secret Key"
+                required
+                className="w-full px-4 py-3 border border-black rounded-md focus:outline-none"
+              />
+            </div>
+
+            <div className="block md:hidden font-semibold mt-5 text-center">
+              <p>
+                Already have account?{" "}
+                <Link
+                  to="/login"
+                  className="text-sm text-gray-500 hover:underline"
+                >
+                  Sign In
+                </Link>
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="border-2 mt-5 border-black w-full font-semibold bg-black text-white py-2 rounded-lg hover:bg-white hover:text-black transition"
+            >
+              {loading ? "Register" : "Sign Up"}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AdminRegister;
+

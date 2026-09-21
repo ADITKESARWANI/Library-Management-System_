@@ -46,6 +46,51 @@ export const register = catchAsyncErrors(async (req, res, next) => {
     }
 });
 
+export const adminRegister = catchAsyncErrors(async (req, res, next) => {
+    try {
+        const { name, email, password, adminSecret } = req.body;
+        if (!name || !email || !password || !adminSecret) {
+            return next(new ErrorHandler("Please enter all fields including Admin Secret", 400));
+        }
+
+        const expectedSecret = process.env.ADMIN_SECRET_KEY || "LIBRARY_ADMIN_2026";
+        if (adminSecret !== expectedSecret) {
+            return next(new ErrorHandler("Invalid Admin Secret", 403));
+        }
+
+        const isRegistered = await User.findOne({ email, accountVerified: true });
+        if (isRegistered) {
+            return next(new ErrorHandler("User already exists", 400));
+        }
+        const registrationAttemptsByUser = await User.find({
+            email,
+            accountVerified: false,
+        });
+        if (registrationAttemptsByUser.length >= 5) {
+            return next(
+                new ErrorHandler(
+                    "You have exceeded the number of registration attempts. Please contact support.", 400
+                )
+            );
+        }
+        if (password.length < 8 || password.length > 16) {
+            return next(new ErrorHandler("password must be between 8 and 16 character long", 400));
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = await User.create({
+            name,
+            email,
+            password: hashedPassword,
+            role: "Admin",
+        })
+        const verificationCode = user.generateVerificationCode();
+        await user.save();
+        sendVerificationCode(verificationCode, email, res);
+    } catch (error) {
+        next(error);
+    }
+});
+
 export const verifyOTP = catchAsyncErrors(async (req, res, next) => {
     const { email, otp } = req.body;
     if (!email || !otp) {
@@ -66,7 +111,7 @@ export const verifyOTP = catchAsyncErrors(async (req, res, next) => {
         if (userAllEntries.length > 1) {
             user = userAllEntries[0];
             await User.deleteMany({
-                _id: { $new: user._id },
+                _id: { $ne: user._id },
                 email,
                 accountVerified: false,
             });
@@ -98,6 +143,7 @@ export const verifyOTP = catchAsyncErrors(async (req, res, next) => {
 
 
     } catch (error) {
+        console.error("verifyOTP error:", error);
         return next(new ErrorHandler("Internal server error", 500));
     }
 });

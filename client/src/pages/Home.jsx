@@ -39,7 +39,7 @@ const Home = () => {
               return user?.role === "User" ? (
                 <UserDashboard />
               ) : (
-                <AdminDashboard />
+                <AdminDashboard setSelectedComponent={setSelectedComponent} />
               );
 
             case "Books": //2

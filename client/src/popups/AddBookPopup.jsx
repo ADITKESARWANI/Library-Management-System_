@@ -21,7 +21,7 @@ const AddBookPopup = () => {
   return (
     <>
       <div className="fixed inset-0 bg-black bg-opacity-50 p-5 flex items-center justify-center z-50">
-        <div className="w-full bg-white rounded-lg shadow-lg md:w-1/3">
+        <div className="w-full bg-white rounded-lg shadow-lg md:w-1/3 max-h-[90vh] overflow-y-auto">
           <div className="p-6">
             <h3 className="text-xl font-bold mb-4">Record Book</h3>
 

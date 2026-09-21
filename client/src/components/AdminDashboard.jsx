@@ -1,160 +1,140 @@
 import React from "react";
-import adminIcon from "../assets/pointing.png";
-import usersIcon from "../assets/people-black.png";
-import bookIcon from "../assets/book-square.png";
-import logo from "../assets/black-logo.png";
-import { Pie } from "react-chartjs-2";
 import { useSelector } from "react-redux";
 import Header from "../layout/Header";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  LineElement,
-  PointElement,
-  ArcElement,
-} from "chart.js";
+import { FaUsers, FaBook, FaBookReader, FaCheckCircle, FaPlus } from "react-icons/fa";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  LineElement,
-  PointElement,
-  ArcElement,
-);
-
-const AdminDashboard = () => {
+const AdminDashboard = ({ setSelectedComponent }) => {
   const { user } = useSelector((state) => state.auth);
   const { users } = useSelector((state) => state.user);
   const { books } = useSelector((state) => state.book);
   const { allBorrowedBooks } = useSelector((state) => state.borrow);
 
   const totalUsers = users.filter((u) => u.role === "User").length;
-  const totalAdmin = users.filter((u) => u.role === "Admin").length;
   const totalBooks = books.length;
   const totalBorrowedBooks = allBorrowedBooks.filter(
-    (book) => book.returnDate === null,
+    (book) => book.returnDate === null
   ).length;
   const totalReturnedBooks = allBorrowedBooks.filter(
-    (book) => book.returnDate !== null,
+    (book) => book.returnDate !== null
   ).length;
 
-  const data = {
-    labels: ["Total Borrowed Books", "Total Returned Books"],
-    datasets: [
-      {
-        data: [totalBorrowedBooks, totalReturnedBooks],
-        backgroundColor: ["#3D3E3E", "#151619"],
-        hoverOffset: 4,
-      },
-    ],
-  };
-
   return (
-    <main className="relative flex-1 p-6">
+    <main className="relative flex-1 p-6 md:p-10 pt-24 md:pt-28 bg-[#f4f7f6] overflow-y-auto h-screen">
       <Header />
-      <div className="flex flex-col-reverse xl:flex-row">
-        <div className="flex-[2] flex-col gap-7 lg:flex-row flex lg:items-center xl:flex-col justify-between xl:gap-20 py-5">
-          <div className="xl:flex-[4] flex items-end w-full content-center">
-            <Pie
-              data={data}
-              options={{ cutout: 0 }}
-              className="mx-auto lg:mx-0 w-full h-auto"
-            />
+      
+      <div className="mt-8 flex justify-between items-end">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800">Admin Command Center</h1>
+          <p className="text-gray-500 mt-2 text-sm">Welcome back, {user?.name}. Manage your library operations efficiently.</p>
+        </div>
+        <button
+          onClick={() => setSelectedComponent("Books")}
+          className="hidden sm:flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-medium hover:bg-gray-800 transition duration-300 shadow-lg"
+        >
+          <FaPlus /> Deploy New Book
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
+        <StatCard icon={<FaUsers />} title="Total Users" value={totalUsers} color="bg-blue-100 text-blue-600" />
+        <StatCard icon={<FaBook />} title="Total Books" value={totalBooks} color="bg-purple-100 text-purple-600" />
+        <StatCard icon={<FaBookReader />} title="Active Borrows" value={totalBorrowedBooks} color="bg-yellow-100 text-yellow-600" />
+        <StatCard icon={<FaCheckCircle />} title="Books Returned" value={totalReturnedBooks} color="bg-green-100 text-green-600" />
+      </div>
+
+      <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold text-gray-800">Recent Books</h2>
+            <button 
+              onClick={() => setSelectedComponent("Catalog")}
+              className="text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition"
+            >
+              View All
+            </button>
           </div>
-          <div className="flex items-center p-8 w-full sm:w-[400px] xl:w-fit mr-5 xl:p-3 2xl:p-6 gap-5 h-fit xl:min-h-[150px] bg-white xl:flex-1 rounded-lg">
-            <img src={logo} alt="logo" className="w-auto xl:flex-1 rounded-lg" />
-            <span className="w-[2px] bg-black h-full"></span>
-            <div className="flex flex-col gap-3">
-              <p className="flex items-center gap-3">
-                <span className="w-3 h-3 rounded-full bg-[#3D3E3E]"></span>
-                <span>Total Borrowed Books</span>
-              </p>
-              <p className="flex items-center gap-3">
-                <span className="w-3 h-3 rounded-full bg-[#151619]"></span>
-                <span>Total Returned Books</span>
-              </p>
-            </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-gray-100">
+                  <th className="py-4 text-sm font-medium text-gray-500">Book Title</th>
+                  <th className="py-4 text-sm font-medium text-gray-500">Author</th>
+                  <th className="py-4 text-sm font-medium text-gray-500">Category</th>
+                </tr>
+              </thead>
+              <tbody>
+                {books.slice().reverse().slice(0, 5).map((book, index) => (
+                  <tr key={index} className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition">
+                    <td className="py-4 text-sm font-semibold text-gray-700">{book.title}</td>
+                    <td className="py-4 text-sm text-gray-600">{book.author}</td>
+                    <td className="py-4 text-sm text-gray-600">
+                      <span className="bg-gray-100 px-3 py-1 rounded-full text-xs font-medium text-gray-600">
+                        {book.category}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {books.length === 0 && (
+              <p className="text-center text-gray-500 py-6">No books deployed yet.</p>
+            )}
           </div>
         </div>
 
-        <div className="flex flex-[4] flex-col gap-7 lg:gap-7 lg:py-5 justify-between xl:min-h-[85.5vh]">
-          <div className="flex flex-col-reverse lg:flex-row gap-7 flex-[4]">
-            <div className="flex flex-col gap-7 flex-1">
-              <div className="flex items-center gap-3 bg-white p-5 max-h-[120px] overflow-y-hidden rounded-lg transition hover:shadow-inner duration-300 w-full lg:max-w-[360px]">
-                <span className="bg-gray-300 h-20 min-w-20 flex justify-center items-center rounded-lg">
-                  <img src={usersIcon} alt="users-icon" className="w-8 h-8" />
-                </span>
-                <span className="w-[2px] bg-black h-20 lg:h-full"></span>
-                <div className="flex flex-col items-center gap-2">
-                  <h4 className="font-black text-3xl">{totalUsers}</h4>
-                  <p className="font-light text-gray-700 text-sm">Total User Base</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 bg-white p-5 max-h-[120px] overflow-y-hidden rounded-lg transition hover:shadow-inner duration-300 w-full lg:max-w-[360px]">
-                <span className="bg-gray-300 h-20 min-w-20 flex justify-center items-center rounded-lg">
-                  <img src={bookIcon} alt="book-icon" className="w-8 h-8" />
-                </span>
-                <span className="w-[2px] bg-black h-20 lg:h-full"></span>
-                <div className="flex flex-col items-center gap-2">
-                  <h4 className="font-black text-3xl">{totalBooks}</h4>
-                  <p className="font-light text-gray-700 text-sm">Total Book Count</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 bg-white p-5 max-h-[120px] overflow-y-hidden rounded-lg transition hover:shadow-inner duration-300 w-full lg:max-w-[360px]">
-                <span className="bg-gray-300 h-20 min-w-20 flex justify-center items-center rounded-lg">
-                  <img src={adminIcon} alt="admin-icon" className="w-8 h-8" />
-                </span>
-                <span className="w-[2px] bg-black h-20 lg:h-full"></span>
-                <div className="flex flex-col items-center gap-2">
-                  <h4 className="font-black text-3xl">{totalAdmin}</h4>
-                  <p className="font-light text-gray-700 text-sm">Total Admin Count</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col lg:flex-row flex-1">
-              <div className="flex flex-col lg:flex-row flex-1 items-center justify-center">
-                <div className="bg-white p-5 rounded-lg shadow-lg h-full flex flex-col justify-center items-center gap-4">
-                  <img
-                    src={user?.profile?.url || logo}
-                    alt="profile"
-                    className="rounded-full w-32 h-32 object-cover"
-                  />
-                  <h2 className="text-xl 2xl:text-2xl font-semibold text-center">
-                    {user?.name}
-                  </h2>
-                  <p className="text-gray-600 text-sm 2xl:text-base text-center">
-                    Welcome to your Admin dashboard. Here you can manage settings
-                    and monitor library statistics.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="hidden xl:flex bg-white p-7 text-xs sm:text-xl xl:text-3xl 2xl:text-4xl min-h-5 font-semibold relative flex-[3] justify-center items-center rounded-2xl">
-            <h4 className="overflow-y-hidden">
-              "A library is not a luxury but one of the necessities of life. In the digital age, it is the quietest, most powerful engine for human connection and progress."
-            </h4>
-            <p className="text-gray-700 text-sm sm:text-lg absolute sm:right-[78px] bottom-[10px]">
-              ~ Digital Library Team
-            </p>
+        <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+          <h2 className="text-xl font-semibold text-gray-800 mb-6">Quick Actions</h2>
+          <div className="flex flex-col gap-4">
+            <ActionCard 
+              title="Deploy Book" 
+              description="Add a new book to the library catalog" 
+              onClick={() => setSelectedComponent("Books")} 
+              icon={<FaBook />}
+            />
+            <ActionCard 
+              title="Manage Users" 
+              description="View and manage registered users" 
+              onClick={() => setSelectedComponent("Users")} 
+              icon={<FaUsers />}
+            />
+            <ActionCard 
+              title="View Catalog" 
+              description="Browse the entire library collection" 
+              onClick={() => setSelectedComponent("Catalog")} 
+              icon={<FaBookReader />}
+            />
           </div>
         </div>
       </div>
     </main>
   );
 };
+
+const StatCard = ({ icon, title, value, color }) => (
+  <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-5 hover:shadow-md transition duration-300">
+    <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-2xl ${color}`}>
+      {icon}
+    </div>
+    <div>
+      <h3 className="text-gray-500 text-sm font-medium">{title}</h3>
+      <p className="text-3xl font-bold text-gray-800 mt-1">{value}</p>
+    </div>
+  </div>
+);
+
+const ActionCard = ({ title, description, onClick, icon }) => (
+  <button 
+    onClick={onClick}
+    className="flex items-center gap-4 w-full p-4 rounded-xl border border-gray-100 hover:border-black hover:bg-gray-50 transition duration-300 text-left group"
+  >
+    <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600 group-hover:bg-black group-hover:text-white transition duration-300">
+      {icon}
+    </div>
+    <div>
+      <h4 className="font-semibold text-gray-800">{title}</h4>
+      <p className="text-xs text-gray-500 mt-1">{description}</p>
+    </div>
+  </button>
+);
 
 export default AdminDashboard;

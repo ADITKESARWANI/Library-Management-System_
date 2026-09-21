@@ -5,6 +5,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Login from "./pages/Login";
 import OTP from "./pages/OTP";
 import Register from "./pages/Register";
+import AdminRegister from "./pages/AdminRegister";
 import ResetPassword from "./pages/ResetPassword";
 import VerifyPasswordOTP from "./pages/VerifyPasswordOTP";
 import { ToastContainer } from "react-toastify";
@@ -41,6 +42,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/admin-register" element={<AdminRegister />} />
         <Route path="/password/forgot" element={<ForgotPassword />} />
         <Route path="/otp-verification/:email" element={<OTP />} />
         <Route path="/password/otp-verify/:email" element={<VerifyPasswordOTP />} />

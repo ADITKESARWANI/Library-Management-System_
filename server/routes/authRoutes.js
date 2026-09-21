@@ -1,10 +1,11 @@
 import express from "express";
-import { forgotPassword, getUser, login, logout, register, resetPassword, updatePassword, verifyOTP, verifyPasswordOtp} from "../controllers/authControllers.js"
+import { forgotPassword, getUser, login, logout, register, adminRegister, resetPassword, updatePassword, verifyOTP, verifyPasswordOtp} from "../controllers/authControllers.js"
 import { isAuthenticated } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 router.post("/register", register);
+router.post("/admin/register", adminRegister);
 router.post("/verify-otp", verifyOTP);
 router.post("/login", login);
 router.get("/logout", isAuthenticated, logout);

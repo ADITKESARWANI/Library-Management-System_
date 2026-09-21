@@ -221,6 +221,23 @@ export const register = (data) => async (dispatch) => {
     });
 }; // Register function
 
+export const adminRegister = (data) => async (dispatch) => {
+  dispatch(authSlice.actions.registerRequest());
+  await axios
+    .post(`${BACKEND_URL}/api/v1/auth/admin/register`, data, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((res) => {
+      dispatch(authSlice.actions.registerSuccess(res.data));
+    })
+    .catch((error) => {
+      dispatch(authSlice.actions.registerFailed(error.response?.data?.message || error.message));
+    });
+}; // Admin Register function
+
 export const otpVerification = (email, otp) => async (dispatch) => {
   dispatch(authSlice.actions.otpVerificationRequest());
   await axios

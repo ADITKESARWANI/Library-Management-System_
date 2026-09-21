@@ -32,7 +32,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="absolute top-0 left-0 w-full bg-white py-0.8 px-6 shadow-md flex justify-between items-center z-[5]">
+      <header className="absolute top-0 left-0 w-full bg-white py-2 px-6 shadow-md flex justify-between items-center z-[5]">
         <div className="flex items-center gap-5">
           <img src={userIcon} alt="userIcon" className="w-8 h-8" />
           <div className="flex flex-col">

@@ -66,9 +66,15 @@ const Register = () => {
         </div>
       </div>
 
-      {/* Right Section */}
-      <div className="w-full md:w-1/2 flex items-center justify-center bg-white p-8">
-        <div className="w-full max-w-sm">
+        {/*RIGHT SIDE*/}
+        <div className="w-full md:w-1/2 flex items-center justify-center bg-white p-8 relative">
+          <Link
+            to={"/"}
+            className="border-2 border-black rounded-3xl font-bold w-52 py-2 px-4 fixed top-10 -left-28 hover:bg-black hover:text-white transition duration-300 text-end z-10"
+          >
+            Back to Home
+          </Link>
+          <div className="w-full max-w-sm">
           <div className="flex justify-center mb-12">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
               <h3 className="font-medium text-4xl">Sign Up</h3>

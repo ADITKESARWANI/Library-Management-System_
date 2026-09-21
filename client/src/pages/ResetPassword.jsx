@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const { token } = useParams();
+  const { email, otp } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error, message, isAuthenticated } = useSelector(
@@ -18,8 +18,8 @@ const ResetPassword = () => {
 
   const handleResetPassword = (e) => {
     e.preventDefault();
-    const data = { password, confirmPassword };
-    dispatch(resetPassword(data, token));
+    const data = { email, otp, password, confirmPassword };
+    dispatch(resetPassword(data));
   };
 
   useEffect(() => {
@@ -56,10 +56,10 @@ const ResetPassword = () => {
         </div>
         <div className="w-full md:w-1/2 flex items-center justify-center bg-white p-8 relative">
           <Link
-            to={"/password/forgot"}
-            className="border-2 border-black rounded-3xl font-bold w-52 py-2 px-4 fixed top-10 -left-28  hover:bg-black hover:text-white transition duration-300 text-end"
+            to={"/"}
+            className="border-2 border-black rounded-3xl font-bold w-52 py-2 px-4 fixed top-10 -left-28 hover:bg-black hover:text-white transition duration-300 text-end z-10"
           >
-            Back
+            Back to Home
           </Link>
           <div className="w-full max-w-sm">
             <div className="flex justify-center mb-12">

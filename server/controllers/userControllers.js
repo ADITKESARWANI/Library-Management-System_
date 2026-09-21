@@ -3,6 +3,7 @@ import ErrorHandler from "../middleware/errorMiddlewares.js";
 import { User } from "../models/userModels.js";
 import bcrypt from "bcrypt";
 import { v2 as cloudinary } from "cloudinary"
+import { sendVerificationCode } from "../utils/sendVerificationCode.js";
 
 
 
@@ -60,5 +61,59 @@ export const registerNewAdmin = catchAsyncErrors(async (req, res, next) => {
         success: true,
         message: "Admin registered succesfully.",
         admin,
+    });
+});
+
+export const requestDeleteOTP = catchAsyncErrors(async (req, res, next) => {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+        return next(new ErrorHandler("User not found.", 404));
+    }
+    
+    const verificationCode = user.generateVerificationCode();
+    await user.save({ validateBeforeSave: false });
+
+    try {
+        await sendVerificationCode(verificationCode, user.email, res, "deleteAccount");
+    } catch (error) {
+        user.verificationCode = null;
+        user.verificationCodeExpire = null;
+        await user.save({ validateBeforeSave: false });
+        return next(new ErrorHandler(error.message, 500));
+    }
+});
+
+export const deleteAccount = catchAsyncErrors(async (req, res, next) => {
+    const { otp } = req.body;
+    if (!otp) {
+        return next(new ErrorHandler("OTP is required.", 400));
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+        return next(new ErrorHandler("User not found.", 404));
+    }
+
+    if (user.verificationCode !== Number(otp)) {
+        return next(new ErrorHandler("Invalid OTP.", 400));
+    }
+
+    const currentTime = Date.now();
+    const verificationCodeExpire = new Date(user.verificationCodeExpire).getTime();
+
+    if (currentTime > verificationCodeExpire) {
+        return next(new ErrorHandler("OTP expired.", 400));
+    }
+
+    await User.findByIdAndDelete(req.user._id);
+
+    res.status(200).cookie("token", "", {
+        expires: new Date(Date.now()),
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+    }).json({
+        success: true,
+        message: "Account deleted successfully."
     });
 });

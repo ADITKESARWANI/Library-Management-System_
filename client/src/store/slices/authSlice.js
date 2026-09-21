@@ -146,6 +146,49 @@ const authSlice = createSlice({
       state.error = action.payload;
     },
 
+    verifyPasswordOtpRequest(state) {
+      state.loading = true;
+      state.error = null;
+      state.message = null;
+    },
+    verifyPasswordOtpSuccess(state, action) {
+      state.loading = false;
+      state.message = action.payload;
+    },
+    verifyPasswordOtpFailed(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+
+    requestDeleteOtpRequest(state) {
+      state.loading = true;
+      state.error = null;
+      state.message = null;
+    },
+    requestDeleteOtpSuccess(state, action) {
+      state.loading = false;
+      state.message = action.payload;
+    },
+    requestDeleteOtpFailed(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    deleteAccountRequest(state) {
+      state.loading = true;
+      state.error = null;
+      state.message = null;
+    },
+    deleteAccountSuccess(state, action) {
+      state.loading = false;
+      state.message = action.payload;
+      state.isAuthenticated = false;
+      state.user = null;
+    },
+    deleteAccountFailed(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+
     resetAuthSlice(state) {
       state.error = null;
       state.loading = false;
@@ -299,11 +342,10 @@ export const updatePassword = (data) => async (dispatch) => {
     });
 }; //update Password
 
-export const resetPassword = (data, token) => async (dispatch) => {
+export const resetPassword = (data) => async (dispatch) => {
   dispatch(authSlice.actions.resetPasswordRequest());
   await axios
-    .put(`${BACKEND_URL}/api/v1/auth/password/reset/${token}`, data, {
-      //URL should be paste here.......
+    .put(`${BACKEND_URL}/api/v1/auth/password/reset`, data, {
       withCredentials: true,
       headers: {
         "Content-Type": "application/json",
@@ -318,5 +360,64 @@ export const resetPassword = (data, token) => async (dispatch) => {
       );
     });
 }; //reset Password
+
+export const verifyPasswordOtp = (data) => async (dispatch) => {
+  dispatch(authSlice.actions.verifyPasswordOtpRequest());
+  await axios
+    .post(`${BACKEND_URL}/api/v1/auth/password/verify-otp`, data, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((res) => {
+      dispatch(authSlice.actions.verifyPasswordOtpSuccess(res.data.message));
+    })
+    .catch((error) => {
+      dispatch(
+        authSlice.actions.verifyPasswordOtpFailed(error.response?.data?.message || error.message),
+      );
+    });
+};
+
+export const requestDeleteAccountOtp = () => async (dispatch) => {
+  dispatch(authSlice.actions.requestDeleteOtpRequest());
+  await axios
+    .post(
+      `${BACKEND_URL}/api/v1/user/delete/request-otp`,
+      {},
+      {
+        withCredentials: true,
+      }
+    )
+    .then((res) => {
+      dispatch(authSlice.actions.requestDeleteOtpSuccess(res.data.message));
+    })
+    .catch((error) => {
+      dispatch(
+        authSlice.actions.requestDeleteOtpFailed(error.response?.data?.message || error.message),
+      );
+    });
+};
+
+export const deleteAccount = (otp) => async (dispatch) => {
+  dispatch(authSlice.actions.deleteAccountRequest());
+  await axios
+    .delete(`${BACKEND_URL}/api/v1/user/delete`, {
+      data: { otp },
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((res) => {
+      dispatch(authSlice.actions.deleteAccountSuccess(res.data.message));
+    })
+    .catch((error) => {
+      dispatch(
+        authSlice.actions.deleteAccountFailed(error.response?.data?.message || error.message),
+      );
+    });
+};
 
 export default authSlice.reducer;

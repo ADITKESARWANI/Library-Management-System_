@@ -1,15 +1,15 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../assets/black-logo.png";
 import logo_with_title from "../assets/white-logo.png";
 import { useDispatch, useSelector } from "react-redux";
 import { forgotPassword, resetAuthSlice } from "../store/slices/authSlice";
 import { toast } from "react-toastify";
-import { Link, Navigate } from "react-router-dom";
-// import { login } from "../store/slices/authSlice";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { loading, error, message, isAuthenticated } = useSelector(
     (state) => state.auth,
   );
@@ -18,19 +18,23 @@ const ForgotPassword = () => {
     e.preventDefault();
     dispatch(forgotPassword(email));
   };
+  
   useEffect(() => {
     if (message) {
       toast.success(message);
       dispatch(resetAuthSlice());
+      navigate(`/password/otp-verify/${email}`);
     }
     if (error) {
       toast.error(error);
       dispatch(resetAuthSlice());
     }
-  }, [dispatch, message, error]);
+  }, [dispatch, message, error, navigate, email]);
+
   if (isAuthenticated) {
     return <Navigate to={"/"} />;
   }
+  
   return (
     <>
       <div className="flex flex-col justify-center md:flex-row h-screen">
@@ -51,10 +55,10 @@ const ForgotPassword = () => {
         {/*RIGHT SIDE*/}
         <div className="w-full md:w-1/2 flex items-center justify-center bg-white p-8 relative">
           <Link
-            to={"/login"}
-            className="border-2 border-black rounded-3xl font-bold w-52 py-2 px-4 fixed top-10 -left-28  hover:bg-black hover:text-white transition duration-300 text-end"
+            to={"/"}
+            className="border-2 border-black rounded-3xl font-bold w-52 py-2 px-4 fixed top-10 -left-28 hover:bg-black hover:text-white transition duration-300 text-end z-10"
           >
-            Back
+            Back to Home
           </Link>
           <div className="w-full max-w-sm">
             <div className="flex justify-center mb-12">
@@ -84,7 +88,7 @@ const ForgotPassword = () => {
                 className="border-2 mt-5 border-black w-full font-semibold bg-black text-white py-2 rounded-lg hover:bg-white hover:text-black transition"
                 disabled={loading ? true : false}
               >
-                RESET PASSOWORD
+                {loading ? "SENDING OTP..." : "SEND OTP"}
               </button>
             </form>
           </div>

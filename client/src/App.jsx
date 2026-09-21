@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import OTP from "./pages/OTP";
 import Register from "./pages/Register";
 import ResetPassword from "./pages/ResetPassword";
+import VerifyPasswordOTP from "./pages/VerifyPasswordOTP";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { getUser } from "./store/slices/authSlice";
@@ -42,7 +43,8 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/password/forgot" element={<ForgotPassword />} />
         <Route path="/otp-verification/:email" element={<OTP />} />
-        <Route path="/password/reset/:token" element={<ResetPassword />} />
+        <Route path="/password/otp-verify/:email" element={<VerifyPasswordOTP />} />
+        <Route path="/password/reset/:email/:otp" element={<ResetPassword />} />
       </Routes>
       <ToastContainer theme="light" />
     </Router>

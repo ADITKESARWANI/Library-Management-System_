@@ -3,7 +3,10 @@ import returnIcon from "../assets/redo.png";
 import browseIcon from "../assets/pointing.png";
 import bookIcon from "../assets/book-square.png";
 import { Pie } from "react-chartjs-2";
-import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { requestDeleteAccountOtp, deleteAccount, resetAuthSlice } from "../store/slices/authSlice";
 import Header from "../layout/Header";
 import {
   Chart as ChartJS,
@@ -32,7 +35,39 @@ ChartJS.register(
 
 const UserDashboard = () => {
   const { userBorrowedBooks } = useSelector((state) => state.borrow);
+  const { loading, error, message } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteOtp, setDeleteOtp] = useState("");
+  
   const borrowedBooks = Array.isArray(userBorrowedBooks) ? userBorrowedBooks : [];
+
+  useEffect(() => {
+    if (message) {
+      toast.success(message);
+      if (message === "Verification Code sent successfully") {
+        setShowDeleteModal(true);
+      }
+      dispatch(resetAuthSlice());
+    }
+    if (error) {
+      toast.error(error);
+      dispatch(resetAuthSlice());
+    }
+  }, [message, error, dispatch]);
+
+  const handleDeleteRequest = () => {
+    dispatch(requestDeleteAccountOtp());
+  };
+
+  const confirmDeleteAccount = (e) => {
+    e.preventDefault();
+    if (deleteOtp.length !== 5) {
+      toast.error("Please enter a valid 5-digit OTP");
+      return;
+    }
+    dispatch(deleteAccount(deleteOtp));
+  };
 
   const totalBorrowedBooks = borrowedBooks.filter(
     (book) => book.returned === false,
@@ -198,7 +233,62 @@ const UserDashboard = () => {
             </div>
           </article>
         </section>
+
+        {/* Danger Zone Section */}
+        <section className="grid grid-cols-1 mt-2">
+          <article className="rounded-3xl border border-red-200 bg-red-50 p-6 shadow-sm">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <h3 className="text-xl font-bold text-red-700">Danger Zone</h3>
+                <p className="text-sm text-red-600 mt-1">Once you delete your account, there is no going back. Please be certain.</p>
+              </div>
+              <button
+                onClick={handleDeleteRequest}
+                disabled={loading}
+                className="rounded-lg bg-red-600 px-6 py-2.5 font-semibold text-white shadow-sm hover:bg-red-700 transition disabled:opacity-50"
+              >
+                {loading ? "Requesting..." : "Delete Account"}
+              </button>
+            </div>
+          </article>
+        </section>
       </div>
+
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Verify Account Deletion</h2>
+            <p className="text-gray-600 mb-6">Enter the 5-digit OTP sent to your email to confirm account deletion.</p>
+            
+            <form onSubmit={confirmDeleteAccount}>
+              <input
+                type="number"
+                required
+                value={deleteOtp}
+                onChange={(e) => setDeleteOtp(e.target.value)}
+                placeholder="5-Digit OTP"
+                className="w-full rounded-lg border border-gray-300 p-3 outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 mb-6"
+              />
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteModal(false)}
+                  className="rounded-lg bg-gray-100 px-5 py-2.5 font-medium text-gray-700 hover:bg-gray-200 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="rounded-lg bg-red-600 px-5 py-2.5 font-medium text-white hover:bg-red-700 transition disabled:opacity-50"
+                >
+                  {loading ? "Deleting..." : "Confirm Delete"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </main>
   );
 };

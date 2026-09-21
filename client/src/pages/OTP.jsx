@@ -36,10 +36,10 @@ const OTP = () => {
       <div className="flex flex-col justify-center md:flex-row h-screen">
         <div className="w-full md:w-1/2 flex items-center justify-center bg-white p-8 relative ">
           <Link
-            to={"/register"}
-            className="border-2 border-black rounded-3xl font-bold w-52 py-2 px-4 fixed top-10 -left-28  hover:bg-black hover:text-white transition duration-300 text-end"
+            to={"/"}
+            className="border-2 border-black rounded-3xl font-bold w-52 py-2 px-4 fixed top-10 -left-28 hover:bg-black hover:text-white transition duration-300 text-end z-10"
           >
-            Back
+            Back to Home
           </Link>
           <div className="max-w-sm w-full">
             <div className="flex justify-center mb-12 ">
